@@ -20,6 +20,7 @@ files {
 }
 
 if (_PLATFORM_ANDROID) then
+  defines { "TRACY_NO_CALLSTACK" }
 end
 
 if (_PLATFORM_IOS) then
