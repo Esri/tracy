@@ -55,13 +55,7 @@ RUN \
 
 # Install a newer version of cmake, as Tracy requires 4.x
 RUN \
-  case "${TARGETARCH}" in \
-    arm64) cmake_arch="aarch64" ;; \
-    amd64) cmake_arch="x86_64" ;; \
-    *) echo "Unsupported TARGETARCH: ${TARGETARCH}" >&2; exit 1 ;; \
-  esac \
-  && \
-  curl -L "https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-${cmake_arch}.tar.gz" -o /tmp/cmake.tar.gz \
+  curl -L "https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-$(uname -m).tar.gz" -o /tmp/cmake.tar.gz \
   && \
   mkdir -p /opt/cmake \
   && \
