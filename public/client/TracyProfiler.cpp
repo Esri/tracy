@@ -3924,6 +3924,7 @@ void Profiler::ReportTopology()
     }
 
     DWORD dsz = 0;
+#ifdef NTDDI_WIN10_CO // RelationProcessorDie is only available in Windows 11-era SDK headers.
     _GetLogicalProcessorInformationEx( RelationProcessorDie, nullptr, &dsz );
     if( GetLastError() == ERROR_INSUFFICIENT_BUFFER )
     {
@@ -3935,6 +3936,7 @@ void Profiler::ReportTopology()
     {
         dsz = 0;
     }
+#endif
 
     DWORD csz = 0;
     _GetLogicalProcessorInformationEx( RelationProcessorCore, nullptr, &csz );
@@ -3975,6 +3977,7 @@ void Profiler::ReportTopology()
         idx++;
     }
 
+#ifdef NTDDI_WIN10_CO // RelationProcessorDie is only available in Windows 11-era SDK headers.
     idx = 0;
     ptr = dieInfo;
     while( (char*)ptr < ((char*)dieInfo) + dsz )
@@ -3992,6 +3995,7 @@ void Profiler::ReportTopology()
         ptr = (SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX*)(((char*)ptr) + ptr->Size);
         idx++;
     }
+#endif
 
     idx = 0;
     ptr = coreInfo;

@@ -1,0 +1,5 @@
+build_capture*
+build_csvexport*
+build_profiler*
+install
+tracy-*.zip
