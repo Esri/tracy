@@ -26,7 +26,6 @@ class TracyConan(ConanFile):
         self.copy("*.h*", src=base + "/public/common", dst=relative + "/public/common")
 
         # libraries
-        # TODO if mobile spit out static library in /staticlib
         output = "output/" + str(self.settings.platform_architecture_target) + "/bin"
         self.copy("*" + self.name + "*", src=base + "../../" + output, dst=output)
         output = "output/" + str(self.settings.platform_architecture_target) + "/staticlib"
