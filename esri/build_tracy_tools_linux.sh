@@ -12,24 +12,24 @@ TRACY_VERSION=0.13.1
 LLVM_ROOT="/usr/local/rtc/llvm/19.1.2"
 
 COMMON_CMAKE_FLAGS=(
-  -GNinja \
-  -DCMAKE_C_COMPILER="${LLVM_ROOT}/bin/clang" \
-  -DCMAKE_CXX_COMPILER="${LLVM_ROOT}/bin/clang++" \
-  -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
-  -DCMAKE_EXE_LINKER_FLAGS="-stdlib=libc++ -fuse-ld=lld -rtlib=compiler-rt -ldl -pthread" \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_INSTALL_PREFIX=install/${TRACY_VERSION}/${TARGETARCH} \
+  -GNinja
+  -DCMAKE_C_COMPILER="${LLVM_ROOT}/bin/clang"
+  -DCMAKE_CXX_COMPILER="${LLVM_ROOT}/bin/clang++"
+  -DCMAKE_CXX_FLAGS="-stdlib=libc++"
+  -DCMAKE_EXE_LINKER_FLAGS="-stdlib=libc++ -fuse-ld=lld -rtlib=compiler-rt -ldl -pthread"
+  -DCMAKE_BUILD_TYPE=Release
+  -DCMAKE_INSTALL_PREFIX=install/${TRACY_VERSION}/${TARGETARCH}
   # Set legacy mode to use GLFW instead of wayland
-  -DLEGACY=ON \
+  -DLEGACY=ON
   # Download, build, and statically link dependencies for portability
-  -DDOWNLOAD_CAPSTONE=ON \
-  -DDOWNLOAD_GLFW=ON \
-  -DDOWNLOAD_FREETYPE=ON \
-  -DDOWNLOAD_LIBCURL=ON \
-  -DDOWNLOAD_PUGIXML=ON \
+  -DDOWNLOAD_CAPSTONE=ON
+  -DDOWNLOAD_GLFW=ON
+  -DDOWNLOAD_FREETYPE=ON
+  -DDOWNLOAD_LIBCURL=ON
+  -DDOWNLOAD_PUGIXML=ON
   # Downloading and building GLFW will default to including wayland support,
   # so manually prefer x11 over wayland
-  -DGLFW_BUILD_WAYLAND=OFF \
+  -DGLFW_BUILD_WAYLAND=OFF
   -DGLFW_BUILD_X11=ON
 )
 
