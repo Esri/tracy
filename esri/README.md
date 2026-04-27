@@ -1,5 +1,32 @@
 # Updating Tracy and Building Desktop Tools
 
+- [Updating Tracy and Building Desktop Tools](#updating-tracy-and-building-desktop-tools)
+  - [Scope](#scope)
+  - [Updating the Tracy Source](#updating-the-tracy-source)
+    - [1. Fetch the latest upstream tags](#1-fetch-the-latest-upstream-tags)
+    - [2. Create an update branch from `runtimecore`](#2-create-an-update-branch-from-runtimecore)
+    - [3. Merge the upstream release tag](#3-merge-the-upstream-release-tag)
+    - [4. Update the Tracy version in scripts](#4-update-the-tracy-version-in-scripts)
+    - [5. Keep runtime and tools on the same version](#5-keep-runtime-and-tools-on-the-same-version)
+  - [Build Overview](#build-overview)
+    - [Optional dependency caching](#optional-dependency-caching)
+  - [Building for macOS](#building-for-macos)
+    - [macOS requirements](#macos-requirements)
+    - [macOS build command](#macos-build-command)
+    - [macOS expected result](#macos-expected-result)
+  - [Building for Linux](#building-for-linux)
+    - [Linux requirements](#linux-requirements)
+    - [Linux build flow](#linux-build-flow)
+      - [Linux `arm64`](#linux-arm64)
+      - [Linux `x64`](#linux-x64)
+    - [Linux expected result](#linux-expected-result)
+  - [Building for Windows](#building-for-windows)
+    - [Windows requirements](#windows-requirements)
+    - [Windows build command](#windows-build-command)
+    - [Windows expected result](#windows-expected-result)
+  - [Staging the Binaries](#staging-the-binaries)
+  - [Suggested Release Checklist](#suggested-release-checklist)
+
 This document describes how to update the vendored Tracy source to a newer upstream release and how to build the Tracy
 desktop tools for distribution on macOS, Linux, and Windows.
 
@@ -22,14 +49,14 @@ The intended desktop outputs are:
 
 1. macOS `arm64`
 2. Linux `arm64`
-3. Linux `amd64`
+3. Linux `x64`
 4. Windows `x64`
 
 At minimum, you need:
 
 1. A 64-bit Windows machine for the Windows build
 2. An Apple Silicon Mac for the macOS build
-3. Docker Desktop for the Linux builds
+3. Docker Desktop for the Linux builds (installed on the Apple Silicon Mac)
 
 ## Updating the Tracy Source
 
@@ -160,18 +187,16 @@ Start within the tracy root directory.
 
 ```bash
 docker build --platform=linux/arm64 --tag=tracy-arm64 - < esri/tracy.dockerfile
-docker run --rm -it -u $(id -u):$(id -g) --volume ${PWD}:/tracy --workdir /tracy/esri tracy-arm64 bash
-./build_tracy_tools_linux.sh
+docker run --rm -it -u $(id -u):$(id -g) --volume ${PWD}:/tracy --workdir /tracy/esri tracy-arm64 ./build_tracy_tools_linux.sh
 ```
 
 After the build finishes, save the generated `arm64` binaries and zip from the mounted workspace.
 
-#### Linux `amd64`
+#### Linux `x64`
 
 ```bash
 docker build --platform=linux/amd64 --tag=tracy-amd64 - < esri/tracy.dockerfile
-docker run --rm -it -u $(id -u):$(id -g) --volume ${PWD}:/tracy --workdir /tracy/esri tracy-amd64 bash
-./build_tracy_tools_linux.sh
+docker run --rm -it -u $(id -u):$(id -g) --volume ${PWD}:/tracy --workdir /tracy/esri tracy-amd64 ./build_tracy_tools_linux.sh
 ```
 
 After the build finishes, save the generated `amd64` binaries and zip from the mounted workspace.
@@ -217,7 +242,7 @@ Once all platform builds are complete, collect the finished artifacts for:
 
 1. macOS `arm64`
 2. Linux `arm64`
-3. Linux `amd64`
+3. Linux `x64`
 4. Windows `x64`
 
 Stage those binaries on apps-data or shortbread, depending on the current release process, so DevOps can bundle and
@@ -231,7 +256,7 @@ publish them through Conan.
 4. Reapply any local patch if the merge required backing it out.
 5. Update the Tracy version in local scripts.
 6. Build macOS `arm64` with `./build_tracy_tools_macos.sh`.
-7. Build Linux `arm64` and `amd64` with Docker and `./build_tracy_tools_linux.sh`.
+7. Build Linux `arm64` and `x64` with Docker and `./build_tracy_tools_linux.sh`.
 8. Build Windows `x64` with `./build_tracy_tools_windows.sh`.
 9. Verify each build produced an `install` directory and zip archive.
 10. Stage the finished artifacts for DevOps distribution.
